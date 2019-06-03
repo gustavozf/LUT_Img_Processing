@@ -64,12 +64,13 @@ def hist_acum(h):
 
     return hac
 
-def hist_acum_norm(hac, tam_img):
-    return hac / tam_img
+def hist_acum_norm(hac):
+    global k
+    # hac[k] == tamanho da imagem
+    return hac / hac[k]
 
 def hist_equalizado(img):
     global k
-    tam_img = np.prod(img.shape)
 
     # primeiro calcula-se o histograma
     # isto eh, a frequencia de cada tom de cinza na imagem
@@ -78,7 +79,7 @@ def hist_equalizado(img):
     hac = hist_acum(h)
     # normaliza-se o histograma acumulado
     # o dividindo pelo tamanho da imagem
-    hac_nom = hist_acum_norm(hac, tam_img)
+    hac_nom = hist_acum_norm(hac)
     # o histograma equalizado eh construido pela multiplicacao
     # do histograma acumulado normalizado e 'k'
     hist_eq = hac_nom * k
@@ -119,7 +120,6 @@ cv2.imwrite('thresholding.png', img_mod)
 
 # histograma
 h = hist(img)
-plt.clf()
 plt.bar(range(len(h)), h)
 plt.savefig('histograma.png')
 
