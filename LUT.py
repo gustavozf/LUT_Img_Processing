@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
     Author: Gustavo Zanoni Felipe
     Date:   June 2nd, 2019
 '''
-
+# tom de cinza maximo
 k = 255
 
 # ----------------------------------------------------- Look Up Table (LUT)
@@ -46,6 +46,15 @@ def thresholding(c):
 
     return lut
 
+def gamma_correc(gamma):
+    global k
+
+    lut = np.array([i**gamma for i in range(k+1)]).astype(np.float64)
+    lut /= lut.max()
+    lut *= k
+
+    return lut
+
 # ----------------------------------------------------- histograma
 def hist(img):
     global k
@@ -54,7 +63,7 @@ def hist(img):
 
 def hist_acum(h):
     global k
-    hac = np.zeros(k+1)
+    hac = np.zeros(k+1).astype(np.int32)
 
     # se i == 0
     hac[0] = h[0]
@@ -92,38 +101,60 @@ img = cv2.imread('teste.png', 0)
 # constante
 LUT = constante(128)
 img_mod = LUT[img]
-cv2.imwrite('constante.png', img_mod)
+cv2.imwrite('./outputs/constante.png', img_mod)
 
 # negacao
 LUT = negacao()
 img_mod = LUT[img]
-cv2.imwrite('negacao.png', img_mod)
+cv2.imwrite('./outputs/negacao.png', img_mod)
 
 # brilho
 LUT = brilho(128)
 img_mod = LUT[img]
-cv2.imwrite('brilho+128.png', img_mod)
+cv2.imwrite('./outputs/brilho+128.png', img_mod)
 
 LUT = brilho(-128)
 img_mod = LUT[img]
-cv2.imwrite('brilho-128.png', img_mod)
+cv2.imwrite('./outputs/brilho-128.png', img_mod)
 
 # aumento de contraste
 LUT = aumento_contraste(128, 192)
 img_mod = LUT[img]
-cv2.imwrite('aum_contraste.png', img_mod)
+cv2.imwrite('./outputs/aum_contraste.png', img_mod)
 
 # thresholding
 LUT = thresholding(128)
 img_mod = LUT[img]
-cv2.imwrite('thresholding.png', img_mod)
+cv2.imwrite('./outputs/thresholding.png', img_mod)
 
 # histograma
+plt.clf()
 h = hist(img)
 plt.bar(range(len(h)), h)
-plt.savefig('histograma.png')
+plt.savefig('./outputs/histograma.png')
 
 plt.clf()
 heq = hist_equalizado(img)
 plt.bar(range(len(heq)), heq)
-plt.savefig('histograma_equalizado.png')
+plt.savefig('./outputs/histograma_equalizado.png')
+
+# correcao de contrastes pelo hist. equal.
+img_mod = heq[img]
+cv2.imwrite('./outputs/contraste_heq.png', img_mod)
+
+# correcao de gamma
+LUT = gamma_correc(0.5)
+img_mod = LUT[img]
+cv2.imwrite('./outputs/contraste_gamma_05.png', img_mod)
+
+plt.clf()
+plt.bar(range(len(LUT)), LUT)
+plt.savefig('./outputs/gamma_05.png')
+
+LUT = gamma_correc(2)
+img_mod = LUT[img]
+cv2.imwrite('./outputs/contraste_gamma_20.png', img_mod)
+
+plt.clf()
+plt.bar(range(len(LUT)), LUT)
+plt.savefig('./outputs/gamma_20.png')
