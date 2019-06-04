@@ -142,13 +142,18 @@ plt.savefig('./outputs/histograma_equalizado.png')
 img_mod = heq[img]
 cv2.imwrite('./outputs/contraste_heq.png', img_mod)
 
+plt.clf()
+h = hist(cv2.imread('./outputs/contraste_heq.png', 0))
+plt.bar(range(len(h)), h)
+plt.savefig('./outputs/histograma_cont_heq.png')
+
 # correcao de gamma
 LUT = gamma_correc(0.5)
 img_mod = LUT[img]
 cv2.imwrite('./outputs/contraste_gamma_05.png', img_mod)
 
 plt.clf()
-plt.bar(range(len(LUT)), LUT)
+plt.plot(range(len(LUT)), LUT)
 plt.savefig('./outputs/gamma_05.png')
 
 LUT = gamma_correc(2)
@@ -156,5 +161,5 @@ img_mod = LUT[img]
 cv2.imwrite('./outputs/contraste_gamma_20.png', img_mod)
 
 plt.clf()
-plt.bar(range(len(LUT)), LUT)
+plt.plot(range(len(LUT)), LUT)
 plt.savefig('./outputs/gamma_20.png')
